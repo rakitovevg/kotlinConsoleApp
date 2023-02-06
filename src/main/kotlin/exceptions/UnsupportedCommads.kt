@@ -1,5 +1,5 @@
 package exceptions
 
-class UnsupportedCommads(command: String?): IllegalArgumentException() {
+class UnsupportedCommads(override val message: String?): IllegalArgumentException() {
 
 }
