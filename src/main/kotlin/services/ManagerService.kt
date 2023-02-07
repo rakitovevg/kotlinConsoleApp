@@ -9,14 +9,17 @@ import models.Parking
 object ManagerService {
 
     private val parking = Parking.create()
+    private var count = 0
 
     fun managerHelper(command: String?, arguments: String?): String? {
         val carInfo = parseInput(arguments)
-        return when(MainCommands.get(command)) {
+        return when (MainCommands.get(command)) {
             MainCommands.PARK -> startParking(carInfo)
             MainCommands.RETURN -> returnCarToOwner(carInfo)
             MainCommands.PARK_INFO_BY_CAR -> parkInfoByCar(carInfo)
             MainCommands.PARK_INFO_BY_PLACE -> parkInfoByPlace(carInfo)
+            MainCommands.PARK_STATS -> parkStats()
+            MainCommands.PARK_ALL_STATS -> parkAllStats()
             else -> throw UnsupportedCommads("")
         }
     }
@@ -41,9 +44,9 @@ object ManagerService {
         val parkingPlace = parking.filterValues { it == null }.keys.firstOrNull() ?: throw NoEmptyPlace("К сожелению, " +
                 "нет свободных мест")
         parking[parkingPlace] = car
+        count++
 
         println("Вы успешно припарковали машину, Ваше место '$parkingPlace'")
-
         return readLine()
     }
 
@@ -71,6 +74,7 @@ object ManagerService {
 
     private fun parkInfoByCar(carInfo: List<String>): String? {
         checkArgumentSize(carInfo, 1)
+
         println("Ваше место на парковке '${carInfo[0]}'")
         return readLine()
     }
@@ -84,12 +88,28 @@ object ManagerService {
         return readLine()
     }
 
-    private fun statistic() {
-        TODO("Task #4")
+    private fun parkStats(): String? {
+        val result: StringBuilder = StringBuilder("Загруженность парковки: \n")
+        parking.forEach { (key, value) ->
+            result.append(key)
+                .append(" - ")
+                .append(value ?: "FREE")
+                .append("\n")
+        }
+
+        println(result)
+        return readLine()
     }
 
-    private fun parseInput(arguments: String?) = arguments?.split(" ")  ?: throw ErrorInput("Вы не ввели " +
-            "необходимые аргументы, повторите пожалуйста")
+    private fun parkAllStats(): String? {
+        println("Всего было выполнено '$count' операций на парковке")
+        return readLine()
+    }
+
+    private fun parseInput(arguments: String?) = arguments?.split(" ") ?: throw ErrorInput(
+        "Вы не ввели " +
+                "необходимые аргументы, повторите пожалуйста"
+    )
 
     private fun checkArgumentSize(arguments: List<String>, size: Int) {
         if (arguments.size != size) {
