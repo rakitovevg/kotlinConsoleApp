@@ -8,14 +8,18 @@ enum class MainCommands(val s: String) {
     PARK("/park"),
     RETURN("/return"),
     PARK_INFO_BY_CAR("/park_info_by_car"),
-    PARK_INFO_BY_PLACE("/park_info_by_place");
+    PARK_INFO_BY_PLACE("/park_info_by_place"),
+    PARK_STATS("/park_stats"),
+    PARK_ALL_STATS("/park_all_stats");
 
     companion object {
 
         fun find(value: String?): MainCommands? = values().firstOrNull { it.s == value }
         fun get(value: String?): MainCommands = find(value) ?: run {
-            throw UnsupportedCommads("Вы ввели некорректную команду '$value'.\n" +
-                "Введите команду '/help' для отображения списка команд!")
+            throw UnsupportedCommads(
+                "Вы ввели некорректную команду '$value'.\n" +
+                "Введите команду '/help' для отображения списка команд!"
+            )
         }
     }
 }
